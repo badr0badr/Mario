@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعم ماريو | للبيتزا والكريب</title>
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-red: #CC0000;
+            --primary-yellow: #FFD700;
+            --dark-red: #990000;
+            --light-bg: #FFFBF7;
+            --card-bg: #FFFFFF;
+            --text-color: #2B2B2B;
+            --text-muted: #666666;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            width: 1200px; /* تثبيت العرض الأساسي ليتناسب مع الحسابات */
+            margin: 0 auto; /* توسيط المحتوى */
+            overflow-x: hidden; /* منع ظهور شريط التمرير الأفقي تماماً */
+            transform-origin: top center;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--primary-red);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .navbar .logo span {
+            color: var(--primary-yellow);
+            text-shadow: 1px 1px 1px #000;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-red);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 120px 20px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 55px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: var(--primary-yellow);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .hero p {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .hero .badge {
+            background-color: var(--primary-red);
+            padding: 10px 25px;
+            border-radius: 30px;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid var(--primary-yellow);
+        }
+
+        /* Contact Info Bar */
+        .contact-bar {
+            background-color: var(--primary-red);
+            color: #FFFFFF;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .contact-item a {
+            color: var(--primary-yellow);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        /* Tabs Navigation */
+        .tabs-container {
+            max-width: 1000px;
+            margin: 50px auto 30px auto;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .tab-btn {
+            background-color: #FFFFFF;
+            border: 2px solid var(--primary-red);
+            color: var(--primary-red);
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--primary-red);
+            color: #FFFFFF;
+        }
+
+        /* Menu Section General Styling */
+        .menu-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+        }
+
+        .menu-section.active-section {
+            display: block;
+            animation: fadeInUp 0.5s ease-in-out forwards;
+        }
+
+        .category-title {
+            text-align: center;
+            margin: 40px 0 25px 0;
+            color: var(--primary-red);
+            font-size: 28px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .category-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-yellow);
+            margin: 8px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        /* Menu Cards Grid - Fixed Desktop 4 Columns */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .menu-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-right: 5px solid var(--primary-red);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(204, 0, 0, 0.12);
+        }
+
+        .item-name {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .prices-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: #FFFDF9;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px dashed #FFE5B4;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .price-size {
+            color: var(--text-muted);
+        }
+
+        .price-amount {
+            color: var(--dark-red);
+            font-weight: 700;
+            background-color: var(--primary-yellow);
+            padding: 2px 12px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .single-price {
+            text-align: center;
+            font-size: 19px;
+            font-weight: 700;
+            color: #FFFFFF;
+            background-color: var(--primary-red);
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: #1A1A1A;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 80px;
+            border-top: 5px solid var(--primary-yellow);
+        }
+
+        footer p {
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #BBB;
+        }
+
+        footer .footer-bold {
+            color: #FFF;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* CSS Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar">
+        <div class="logo">🍕 ماريو <span>MARIO</span></div>
+        <ul class="nav-links">
+            <li><a href="#" onclick="switchTab('pizza')">البيتزا</a></li>
+            <li><a href="#" onclick="switchTab('feteer')">الفطير</a></li>
+            <li><a href="#" onclick="switchTab('crepe')">الكريب</a></li>
+            <li><a href="#" onclick="switchTab('other')">الوجبات والإضافات</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>مطعم ماريو 🍕</h1>
+        <p>أصل البيتزا الإيطالي والشرقي والكريب في أشمون</p>
+        <span class="badge">صفحة عرض المنيو الرسمي والأسعار الحالية - زوم تلقائي متناسق</span>
+    </header>
+
+    <!-- Contact Info Section -->
+    <section class="contact-bar">
+        <div class="contact-item">
+            📍 العنوان: أشمون - حديقة الورد أمام ماركت البرعي
+        </div>
+        <div class="contact-item">
+            📞 دليفري: <a href="tel:01080708001">01080708001</a>
+        </div>
+        <div class="contact-item">
+            📞 رقم إضافي: <a href="tel:01203277711">01203277711</a>
+        </div>
+    </section>
+
+    <!-- Custom Tabs Grid Filter -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('pizza', this)">🍕 البيتزا الإيطالي والشرقي</button>
+        <button class="tab-btn" onclick="switchTab('feteer', this)">🫓 الفطير الحادق والحلو</button>
+        <button class="tab-btn" onclick="switchTab('crepe', this)">🥞 كريب حادق وحلو</button>
+        <button class="tab-btn" onclick="switchTab('other', this)">🌯 أكلات وإضافات</button>
+    </div>
+
+    <!-- ================= PIZZA TAB ================= -->
+    <div id="pizza" class="menu-section active-section">
+        
+        <!-- بيتزا إيطالي لحوم -->
+        <h3 class="category-title">🍕 بيتزا إيطالي لحوم</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">بيتزا بسطرمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">165 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا لحمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">95 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا سوسيس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">95 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">165 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا سجق بلدي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا سلامي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">95 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا سوبر سوبريم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">135 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">170 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا مشكل لحوم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">135 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">170 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا بيج تيستي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا نصين</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">160 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">190 ج</span></div></div></div>
+        </div>
+
+        <!-- بيتزا إيطالي فراخ -->
+        <h3 class="category-title">🍕 بيتزا إيطالي فراخ</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">بيتزا فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا كريسبي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">95 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا باربيكيو</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">135 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">180 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا ميكس فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">135 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">180 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا تشيكن رانش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">105 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا سوبريم فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">105 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا سوبر كرانش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">165 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا استربس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">105 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شيش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">105 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+        </div>
+
+        <!-- بيتزا إيطالي جبن -->
+        <h3 class="category-title">🍕 بيتزا إيطالي جبن</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">بيتزا مارجريتا</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">135 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا خضار</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">105 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">140 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا ميكس جبن</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">90 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">135 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">150 ج</span></div></div></div>
+        </div>
+
+        <!-- بيتزا إيطالي أسماك -->
+        <h3 class="category-title">🍕 بيتزا إيطالي أسماك</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">بيتزا سي رانش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">230 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">280 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا تونة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">170 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا جمبري</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">250 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">290 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا سي فود</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">225 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">275 ج</span></div></div></div>
+        </div>
+
+        <!-- بيتزا شرقي لحوم -->
+        <h3 class="category-title">🍕 بيتزا شرقي لحوم</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">بيتزا شرقي ميكس لحوم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">180 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي سجق بلدي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">170 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي سجق مفروم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي سوسيس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي بسطرمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">135 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">165 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي سجق كبري</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">120 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">170 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">200 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي بسطرمة كبري</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">120 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">170 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">200 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي ميكس جبن</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي رومي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">125 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">155 ج</span></div></div></div>
+        </div>
+
+        <!-- بيتزا شرقي فراخ -->
+        <h3 class="category-title">🍕 بيتزا شرقي فراخ</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">بيتزا شرقي فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">170 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي ميكس فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">180 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي كريسبي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي استربس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">170 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي تشيكن رانش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">120 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">155 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا شرقي باربيكيو</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">120 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">155 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+        </div>
+
+        <!-- بيتزا شرقي أسماك -->
+        <h3 class="category-title">🍕 بيتزا شرقي أسماك</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">بيتزا سي رانش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">225 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">275 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا تونة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">180 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا جمبري</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">230 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">280 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بيتزا سي فود</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">225 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">275 ج</span></div></div></div>
+        </div>
+    </div>
+
+
+    <!-- ================= FETEER TAB ================= -->
+    <div id="feteer" class="menu-section">
+        <!-- فطيرة لحوم -->
+        <h3 class="category-title">🫓 فطيرة لحوم</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">فطيرة ميكس لحوم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">175 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة سجق بلدي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة سجق مفروم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة لحمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">140 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">170 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة بسطرمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة سجق بلدي كبري</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">200 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة بسطرمة كبري</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">180 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">200 ج</span></div></div></div>
+        </div>
+
+        <!-- فطيرة فراخ -->
+        <h3 class="category-title">🫓 فطيرة فراخ</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">فطيرة ميكس فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">175 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة استربس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">150 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">170 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة كريسبي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة فراخ رانش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">160 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">185 ج</span></div></div></div>
+        </div>
+
+        <!-- فطير الحلو -->
+        <h3 class="category-title">🍯 فطير الحلو</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">فطيرة سكر سادة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">35 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">40 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">60 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة بغاشة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">40 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">50 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">65 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة كاستر</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">45 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">55 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">70 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة ملوكي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">55 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">75 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">85 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة قشطة عسل</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">105 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">130 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة قشطة وعسل ومكسرات</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">125 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">145 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة شيكولاتة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">105 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">125 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة شيكولاتة موز</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">90 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">135 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة ميكس شيكولاتة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">125 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">145 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة أوريو</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">125 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">145 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة لوتس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">105 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">135 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة كنافة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">90 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">115 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">135 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة بسبوسة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">90 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">115 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">135 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فطيرة بسبوسة كنافة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">125 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">140 ج</span></div></div></div>
+        </div>
+    </div>
+
+
+    <!-- ================= CREPE TAB ================= -->
+    <div id="crepe" class="menu-section">
+        <!-- كريب فراخ -->
+        <h3 class="category-title">🥞 كريب فراخ</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">كريب شاورما فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب استربس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب زنجر</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب شيش طاووق</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب فاهيتا فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب سوبر كرانش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">90 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب تشيكن رانش</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب ميكس فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب استربس سوسيس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">90 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">100 ج</span></div></div></div>
+        </div>
+
+        <!-- كريب لحوم -->
+        <h3 class="category-title">🥞 كريب لحوم</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">كريب سجق</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">90 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب سوسيس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">90 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب بسطرمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب لحمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">90 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب ميكس لحوم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">90 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب برجر</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">85 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">95 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب برجر بيج تيستي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">90 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">100 ج</span></div></div></div>
+        </div>
+
+        <!-- كريب بطاطس -->
+        <h3 class="category-title">🥞 كريب بطاطس</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">كريب بطاطس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">40 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">45 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب بطاطس كريسبي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">70 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">80 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب بطاطس استربس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">90 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب بطاطس شاورما</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">75 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">85 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب بطاطس سجق</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">70 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">80 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">كريب ميكس جبن</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">80 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">90 ج</span></div></div></div>
+        </div>
+
+        <!-- كريب الحلو -->
+        <h3 class="category-title">🥞 كريب الحلو</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">كريب شيكولاتة</div><div class="single-price">60 ج</div></div>
+            <div class="menu-card"><div class="item-name">كريب موز قطع</div><div class="single-price">80 ج</div></div>
+            <div class="menu-card"><div class="item-name">كريب شيكولاتة قطع</div><div class="single-price">75 ج</div></div>
+        </div>
+    </div>
+
+
+    <!-- ================= OTHER TAB ================= -->
+    <div id="other" class="menu-section">
+        <!-- السوري -->
+        <h3 class="category-title">🌯 السوري</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">سوري بطاطس</div><div class="single-price">25 ج</div></div>
+            <div class="menu-card"><div class="item-name">سوري بطاطس شاورما</div><div class="single-price">75 ج</div></div>
+            <div class="menu-card"><div class="item-name">سوري بطاطس استربس</div><div class="single-price">75 ج</div></div>
+            <div class="menu-card"><div class="item-name">سوري بطاطس كريسبي</div><div class="single-price">70 ج</div></div>
+            <div class="menu-card"><div class="item-name">سوري شاورما</div><div class="single-price">85 ج</div></div>
+            <div class="menu-card"><div class="item-name">سوري استربس</div><div class="single-price">85 ج</div></div>
+            <div class="menu-card"><div class="item-name">سوري ميكس فراخ</div><div class="single-price">90 ج</div></div>
+        </div>
+
+        <!-- الوتش صاروخ -->
+        <h3 class="category-title">🌯 الوتش صاروخ</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">وتش فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">130 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">وتش سجق</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">95 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">125 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">وتش سوسيس</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">95 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">125 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">وتش سجق كبري</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">125 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">130 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">وتش لحمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">95 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">160 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">وتش ميكس فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">125 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">وتش ميكس لحوم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">110 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">135 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">وتش كريسبي</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">135 ج</span></div></div></div>
+        </div>
+
+        <!-- حواوشي -->
+        <h3 class="category-title">🥙 حواوشي</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">حواوشي إسكندراني لحمة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">90 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">120 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">140 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">حواوشي إسكندراني سجق</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">90 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">120 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">140 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">حواوشي ميكس لحوم</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">150 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">حواوشي ميكس فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">100 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">130 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">150 ج</span></div></div></div>
+        </div>
+
+        <!-- الإضافات -->
+        <h3 class="category-title">➕ الإضافات</h3>
+        <div class="menu-grid">
+            <div class="menu-card"><div class="item-name">جبنة موزاريلا</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">35 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">50 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">60 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">جبنة كبري</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">35 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">45 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">60 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">فراخ</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">45 ج</span></div><div class="price-row"><span class="price-size">وسط</span><span class="price-amount">45 ج</span></div><div class="price-row"><span class="price-size">كبير</span><span class="price-amount">70 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">بطاطس مخللة</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">5 ج</span></div></div></div>
+            <div class="menu-card"><div class="item-name">تومية</div><div class="prices-wrapper"><div class="price-row"><span class="price-size">صغير</span><span class="price-amount">5 ج</span></div></div></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-bold">🍕 مطعم ماريو للبيتزا والكريب 🍕</p>
+        <p>العنوان: أشمون - حديقة الورد أمام ماركت البرعي</p>
+        <p>الهواتف: 01080708001 - 01203277711</p>
+        <p style="margin-top: 20px; font-size: 12px; color: #777;">جميع الحقوق محفوظة &copy; 2026 - نسخة مخصصة لشاشات الكمبيوتر (ملائمة ذكية)</p>
+    </footer>
+
+    <!-- JavaScript For Tab Switching & Auto Zoom -->
+    <script>
+        // دالة الزوم التلقائي حسب مقاس الشاشة الحالية للمستخدم
+        function applyAutoZoom() {
+            const targetWidth = 1200; // العرض الثابت المطلوب
+            const currentWidth = window.innerWidth; // عرض شاشة المستخدم الحالية
+            
+            // حساب نسبة الزوم المطلوبة
+            const zoomFactor = currentWidth / targetWidth;
+            
+            // تطبيق الزوم على جسم الصفحة بالكامل
+            document.body.style.zoom = zoomFactor;
+        }
+
+        // تشغيل الزوم التلقائي عند تحميل الصفحة وعند تغيير مقاس النافذة
+        window.addEventListener('DOMContentLoaded', applyAutoZoom);
+        window.addEventListener('resize', applyAutoZoom);
+
+        // دالة التنقل بين التبويبات القديمة
+        function switchTab(tabId, buttonElement) {
+            const sections = document.querySelectorAll('.menu-section');
+            sections.forEach(section => {
+                section.classList.remove('active-section');
+            });
+
+            const activeSection = document.getElementById(tabId);
+            if (activeSection) {
+                activeSection.classList.add('active-section');
+            }
+
+            if(buttonElement) {
+                const buttons = document.querySelectorAll('.tab-btn');
+                buttons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                buttonElement.classList.add('active');
+            } else {
+                const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(tabId));
+                if(targetBtn) {
+                    const buttons = document.querySelectorAll('.tab-btn');
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    targetBtn.add('active');
+                }
+            }
+
+            window.scrollTo({
+                top: document.querySelector('.tabs-container').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
